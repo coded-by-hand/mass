@@ -1,0 +1,18 @@
+#! /usr/bin/env python
+
+import os, time, argparse, jsmin
+from fsevents import Observer
+
+def main(args):
+  print 'all systems go...'
+  print 'watching ' + args.src
+
+if __name__ == "__main__":
+  parser = argparse.ArgumentParser()
+  parser.add_argument(
+    'src',
+    nargs='?',
+    default=os.getcwd()
+  )
+  args = parser.parse_args()
+  main(args)
