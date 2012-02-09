@@ -1,4 +1,69 @@
-jsWatchr
-========
+jsWatchr (working project name)
+===============================
 
-init
+Inspired by SASS, the goal is to build an automated tool system for
+managing javascript files in a project.
+
+### Goals
+
+* easy method to combine multiple files into single asset request
+* automated minification/optimization
+* extending javascript to allow import other scripts
+
+
+## Source Files
+
+Possible formats for 'master' files:
+
+    foo.xjs
+    foo.x.js
+    foo.js
+
+
+## Including Files
+
+Inside 'extended' javascript files, you will be able to import other
+scripts.
+
+    # foo.xjs
+    # typically this will just be a file of imports
+
+    @import 'libs/jquery'
+    @import 'plugins/jquery.jnotify'
+
+A future version could support 'inline' javascript
+
+    # bar.js
+    # file begins with some imports
+
+    @import 'libs/jquery'
+
+    # now some javascript 
+    $(document).ready(function(){
+        // jquery is ready
+    });
+
+    # another import!
+    @import 'plugins/jquery.jnotify'
+
+
+### Other 'verbs'
+
+    @include 'libs/jquery'
+    @import  'libs/jquery'
+    @require 'libs/jquery'
+    @load    'libs/jquery'
+
+Maybe you could even specify processing:
+
+    @combine 'libs/jquery'
+    @min     'plugins/jquery.jnotify'
+
+Another option that includes passing parameters to the parser
+
+    @include 'libs/jquery' {
+        combine: true
+        min:     false
+        foo:     bar
+    }
+
