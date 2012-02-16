@@ -1,18 +1,107 @@
 #! /usr/bin/env python
 
-import os, time, argparse, jsmin
-from fsevents import Observer
+import os, time, argparse
+from jsmin import *
+from fsevents import Observer, Stream
 
+# what file extensions should we monitor
+exts = ['js', 'xjs']
+groups = []
+source_dir = ''
+dest_dir = ''
 def main(args):
-  print 'all systems go...'
-  print 'watching ' + args.src
+    """
+    initialize parameters and start the scanner
+    """
+    global source_dir
+    global dest_dir
+    print 'initializing...'
+    source_dir = os.path.abspath(args.src)
+    dest_dir = os.path.abspath(args.dest)
+    parse_config(source_dir)
+    start_scanner(source_dir)
+     
+def parse_config(path):
+    """
+    parses config.xjs for groups and import statements
+    """
+    global groups
+    config = open(path + '/config.xjs');
+    for line in config.readlines():
+        segs = line.split()
+        if segs[0] == '@group':
+            scripts = []
+            group_name = segs[1]
+            groups.append((group_name,scripts))
+        if segs[0] == '@import':
+            scripts.append(segs[1])
+
+def start_scanner(path):
+    """
+    watch for file events in the supplied path
+    """
+    try:
+        observer = Observer()
+        observer.start()
+        stream = Stream(file_modified, path, file_events=True)
+        observer.schedule(stream)
+        print("source:{}".format(path))
+        print "Watching for changes. Press Ctrl-C to stop."
+        while 1:
+          pass
+    except (KeyboardInterrupt, OSError, IOError):
+        observer.unschedule(stream)
+        observer.stop()
+
+def file_modified(event):
+    """
+    react to file events
+    """
+    path, ext = os.path.splitext(event.name)
+    if ext[1:] in exts:
+        print "Change detected to: %s" % (event.name)
+        parse_file(path + ext)
+
+# perform action on matched file
+def parse_file(path):
+    """
+    parse arguments and make go
+    """
+    global source_dir
+    global dest_dir
+    for (group,scripts) in groups:
+        if os.path.basename(path) in scripts:
+            minify_scripts = '';
+            for script in scripts:
+                #open file and minify
+                js = open(source_dir + '/' + script).read()
+                minify_scripts += js
+            group_file = group + '.min.js'
+            f = open(dest_dir + '/' + group_file,'w')
+            f.write(jsmin(minify_scripts))
+            f.close()
+            print "Wrote combined and minified file to: %s" % (dest_dir + '/' + group_file)
 
 if __name__ == "__main__":
-  parser = argparse.ArgumentParser()
-  parser.add_argument(
-    'src',
-    nargs='?',
-    default=os.getcwd()
-  )
-  args = parser.parse_args()
-  main(args)
+    """
+    parse arguments and make go
+    """
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '-s',
+        '--src',
+        help='source folder to watch',
+        default='.',
+        dest='src',
+        metavar='folder'
+    )
+    parser.add_argument(
+        '-d',
+        '--dest',
+        help='source folder to watch',
+        default='.',
+        dest='dest',
+        metavar='folder'
+    )
+    args = parser.parse_args()
+    main(args)
