@@ -10,33 +10,53 @@ managing javascript files in a project.
 * automated minification/optimization
 * extending javascript to allow import other scripts
 
+##Requirements
+
+* Mac OS X (currently using fsevents to track file changes.  will later add support for Linux and Windows)
+
+### Python Packages Used
+* jsmin (http://pypi.python.org/pypi/jsmin)
+* macfsevents (http://pypi.python.org/pypi/MacFSEvents/0.2.1)
+* virtualenv (http://pypi.python.org/pypi/virtualenv)
+
+##Installation
+
+To use jsWatchr globally from the command line, clone the repo from github and create a symbolic link in your /usr/bin/local folder to the jsWatchr file.
+    
+    ln -s path/to/jsWatchr/jswatchr /usr/bin/local/jswatchr
+
+jsWatchr comes with the necessary python packages via virutalenv by default.  Before starting jsWatchr, navigate to the repository and start the virutal environment.  
+
+If the virtual environment is not started, python packages must be installed to the local python environment using pip.
+
+    cd path/to/jsWatchr
+    source env/bin/activate
 
 ## Source Files
 
-Possible formats for 'master' files:
+Source files use the extension '.xjs', which tentatively signifies extended
+javascript.  These files are used to define javascript files which will be
+included in a "compiled" version that is output by jsWatchr. 
 
-    foo.xjs
-    foo.x.js
-    foo.js
+### Including Files
 
+Inside 'extended' javascript files, you can import other scripts.  All
+javascript files listed in the source file will be combined, minified and
+output to a javascript file with the same name as the original xjs file. Paths
+to imported javascript files should be relative to the directory of the xjs
+file they are imported into.
 
-## Including Files
-
-Inside 'extended' javascript files, you will be able to import other
-scripts.
+The example below specifies two javascript files and will be output to the file
+foo.min.js:
 
     # foo.xjs
-    # typically this will just be a file of imports
+    @import 'foo.js'
+    @import 'plugins/jquery.jnotify.js'
 
-    @import 'libs/jquery'
-    @import 'plugins/jquery.jnotify'
-
-A future version could support 'inline' javascript
+A future version may also support 'inline' javascript
 
     # bar.js
-    # file begins with some imports
-
-    @import 'libs/jquery'
+    @import 'foo.js'
 
     # now some javascript 
     $(document).ready(function(){
@@ -44,26 +64,22 @@ A future version could support 'inline' javascript
     });
 
     # another import!
-    @import 'plugins/jquery.jnotify'
+    @import 'plugins/jquery.jnotify.js'
 
+## CLI Arguments
 
-### Other 'verbs'
+###Defining Destination Directory
 
-    @include 'libs/jquery'
-    @import  'libs/jquery'
-    @require 'libs/jquery'
-    @load    'libs/jquery'
+By default, jsWatchr saves the compiled js files in the same directory as the
+source files.  The -d argument can be used to specify a different output
+directory.
+    
+    jswatchr -d path/to/output
 
-Maybe you could even specify processing:
+###Defining Source Directory
 
-    @combine 'libs/jquery'
-    @min     'plugins/jquery.jnotify'
+If a source directory is not specified, jsWatchr uses the current directory by
+default.  The -s argument can be used to specify the directory for jsWatchr to
+discover files.
 
-Another option that includes passing parameters to the parser
-
-    @include 'libs/jquery' {
-        combine: true
-        min:     false
-        foo:     bar
-    }
-
+    jswatchr -s path/to/source -d path/to/output
