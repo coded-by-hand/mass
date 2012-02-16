@@ -5,7 +5,8 @@ from jsmin import *
 from fsevents import Observer, Stream
 
 # what file extensions should we monitor
-exts = ['js', 'xjs']
+source_ext = 'xjs'
+exts = ['js', source_ext]
 groups = []
 source_dir = ''
 dest_dir = ''
@@ -17,24 +18,41 @@ def main(args):
     global dest_dir
     print 'initializing...'
     source_dir = os.path.abspath(args.src)
-    dest_dir = os.path.abspath(args.dest)
-    parse_config(source_dir)
+    if args.dest != None:
+        dest_dir = os.path.abspath(args.dest)
+    init_sources(source_dir)
     start_scanner(source_dir)
-     
-def parse_config(path):
+
+def dir_list(dir_name):
+    outputList = []
+    for root, dirs, files in os.walk(dir_name):
+        outputList.append(root)
+        for d in dirs:
+            outputList.append(''.join([root, d]))
+        for f1 in files:
+            outputList.append('/'.join([root, f1]))
+    return outputList
+
+def init_group(group):
+    global groups
+    group_config = open(group);
+    scripts = []
+    for line in group_config.readlines():
+        segs = line.split()
+        if segs[0] == '@import':
+            scripts.append(os.path.abspath(os.path.dirname(group) + '/' + segs[1]))
+    groups.append((group,scripts))
+
+def init_sources(path):
     """
-    parses config.xjs for groups and import statements
+    initializes array of groups and their associated js files
     """
     global groups
-    config = open(path + '/config.xjs');
-    for line in config.readlines():
-        segs = line.split()
-        if segs[0] == '@group':
-            scripts = []
-            group_name = segs[1]
-            groups.append((group_name,scripts))
-        if segs[0] == '@import':
-            scripts.append(segs[1])
+    global source_ext
+    for f in dir_list(source_dir):
+        if(os.path.splitext(f)[1][1:] == source_ext):
+            init_group(f)
+    print groups
 
 def start_scanner(path):
     """
@@ -70,17 +88,22 @@ def parse_file(path):
     global source_dir
     global dest_dir
     for (group,scripts) in groups:
-        if os.path.basename(path) in scripts:
+        if path in scripts:
+            if dest_dir == '':
+                rel_dest = os.path.dirname(group)
+            else:
+                rel_dest = dest_dir
+            group_name = os.path.basename(os.path.splitext(group)[0])
             minify_scripts = '';
             for script in scripts:
                 #open file and minify
-                js = open(source_dir + '/' + script).read()
+                js = open(script).read()
                 minify_scripts += js
-            group_file = group + '.min.js'
-            f = open(dest_dir + '/' + group_file,'w')
+            group_file = group_name + '.min.js'
+            f = open(group_file,'w')
             f.write(jsmin(minify_scripts))
             f.close()
-            print "Wrote combined and minified file to: %s" % (dest_dir + '/' + group_file)
+            print "Wrote combined and minified file to: %s" % (rel_dest + '/' + group_file)
 
 if __name__ == "__main__":
     """
@@ -99,7 +122,7 @@ if __name__ == "__main__":
         '-d',
         '--dest',
         help='source folder to watch',
-        default='.',
+        default=None,
         dest='dest',
         metavar='folder'
     )
