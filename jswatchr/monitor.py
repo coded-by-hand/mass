@@ -1,15 +1,15 @@
 import os
 import time
 import argparse
-import jsmin
+import parse
 from fsevents import Observer, Stream
 
 # what file extensions should we monitor
 source_ext = 'xjs'
 exts = ['js', source_ext]
 groups = []
-source_dir = ''
-dest_dir = ''
+source_dir = None
+dest_dir = None
 
 def main():
     global source_dir
@@ -96,35 +96,11 @@ def file_modified(event):
     """
     react to file events
     """
+    global groups
     path, ext = os.path.splitext(event.name)
     if ext[1:] in exts:
         print "Change detected to: %s" % (event.name)
-        parse_file(path + ext)
-
-# perform action on matched file
-def parse_file(path):
-    """
-    parse arguments and make go
-    """
-    global source_dir
-    global dest_dir
-    for (group,scripts) in groups:
-        if path in scripts:
-            if dest_dir == '':
-                rel_dest = os.path.dirname(group)
-            else:
-                rel_dest = dest_dir
-            group_name = os.path.basename(os.path.splitext(group)[0])
-            minify_scripts = '';
-            for script in scripts:
-                #open file and minify
-                js = open(script).read()
-                minify_scripts += js
-            group_file = group_name + '.min.js'
-            f = open(group_file,'w')
-            f.write(jsmin.jsmin(minify_scripts))
-            f.close()
-            print "Wrote combined and minified file to: %s" % (rel_dest + '/' + group_file)
+        parse.parse_file(groups,path + ext,dest_dir)
 
 if __name__ == "__main__":
     main()
