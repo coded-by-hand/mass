@@ -1,5 +1,6 @@
 #!/usr/local/Cellar/python/2.7.2/bin/python
 
+import argparse
 from jswatchr import *
 
 if __name__ == '__main__':
