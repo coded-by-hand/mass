@@ -1,5 +1,7 @@
-import os, time, argparse
-from jsmin import *
+import os
+import time
+import argparse
+import jsmin
 from fsevents import Observer, Stream
 
 # what file extensions should we monitor
@@ -9,13 +11,34 @@ groups = []
 source_dir = ''
 dest_dir = ''
 
-def main(args):
+def main():
+    global source_dir
+    global dest_dir
+    """
+    parse arguments and make go
+    """
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '-s',
+        '--src',
+        help='source folder to watch',
+        default='.',
+        dest='src',
+        metavar='folder'
+    )
+    parser.add_argument(
+        '-d',
+        '--dest',
+        help='source folder to watch',
+        default=None,
+        dest='dest',
+        metavar='folder'
+    )
+    args = parser.parse_args()
     """
     initialize parameters and start the scanner
     """
-    global source_dir
-    global dest_dir
-    print 'initializing...'
+    print 'Initializing...'
     source_dir = os.path.abspath(args.src)
     if args.dest != None:
         dest_dir = os.path.abspath(args.dest)
@@ -50,8 +73,8 @@ def init_sources(path):
     global source_ext
     for f in dir_list(source_dir):
         if(os.path.splitext(f)[1][1:] == source_ext):
+            print "Source file discovered: %s" % (f)
             init_group(f)
-    print groups
 
 def start_scanner(path):
     """
@@ -62,7 +85,6 @@ def start_scanner(path):
         observer.start()
         stream = Stream(file_modified, path, file_events=True)
         observer.schedule(stream)
-        print("source:{}".format(path))
         print "Watching for changes. Press Ctrl-C to stop."
         while 1:
           pass
@@ -100,30 +122,9 @@ def parse_file(path):
                 minify_scripts += js
             group_file = group_name + '.min.js'
             f = open(group_file,'w')
-            f.write(jsmin(minify_scripts))
+            f.write(jsmin.jsmin(minify_scripts))
             f.close()
             print "Wrote combined and minified file to: %s" % (rel_dest + '/' + group_file)
 
-#if __name__ == "__main__":
-    #"""
-    #parse arguments and make go
-    #"""
-    #parser = argparse.ArgumentParser()
-    #parser.add_argument(
-        #'-s',
-        #'--src',
-        #help='source folder to watch',
-        #default='.',
-        #dest='src',
-        #metavar='folder'
-    #)
-    #parser.add_argument(
-        #'-d',
-        #'--dest',
-        #help='source folder to watch',
-        #default=None,
-        #dest='dest',
-        #metavar='folder'
-    #)
-    #args = parser.parse_args()
-    #main(args)
+if __name__ == "__main__":
+    main()
