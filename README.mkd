@@ -18,16 +18,26 @@ managing javascript files in a project.
 * jsmin (http://pypi.python.org/pypi/jsmin)
 * macfsevents (http://pypi.python.org/pypi/MacFSEvents/0.2.1)
 * virtualenv (http://pypi.python.org/pypi/virtualenv)
+* argparse (http://pypi.python.org/pypi/argparse)
 
 ##Installation
 
-To use jsWatchr globally from the command line, clone the repo from github and create a symbolic link in your /usr/bin/local folder to the jsWatchr file.
+To install jswatchr, clone the repo and install using setup.py:
+
+    python setup.py install
+
+Alternatively, to use jsWatchr globally from the command line without
+installing anything to your site-packages directory, clone the repo from github
+and create a symbolic link in your /usr/bin/local folder to the jsWatchr file.
     
     ln -s path/to/jsWatchr/jswatchr /usr/bin/local/jswatchr
 
-jsWatchr comes with the necessary python packages via virutalenv by default.  Before starting jsWatchr, navigate to the repository and start the virutal environment.  
+jsWatchr comes with the necessary python packages via virutalenv by default.
+Before starting jsWatchr, navigate to the repository and start the virutal
+environment.  
 
-If the virtual environment is not started, python packages must be installed to the local python environment using pip.
+If the virtual environment is not started, python packages must be installed to
+the local python environment using pip.
 
     cd path/to/jsWatchr
     source env/bin/activate
