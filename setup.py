@@ -10,7 +10,10 @@ setup(
     author_email='developer@topicdesign.com',
     url='https://github.com/jackboberg/jswatchr',
     packages=['jswatchr'],
-    scripts=['jswatchr/scripts/jswatchr'],
     install_requires=['jsmin','macfsevents','argparse'],
-    zip_safe = False
+    zip_safe = False,
+    entry_points="""
+    [console_scripts]
+    jswatchr = jswatchr.monitor:main
+    """
 )
