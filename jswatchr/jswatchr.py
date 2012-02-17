@@ -1,5 +1,3 @@
-#! /usr/bin/env python
-
 import os, time, argparse
 from jsmin import *
 from fsevents import Observer, Stream
@@ -10,6 +8,7 @@ exts = ['js', source_ext]
 groups = []
 source_dir = ''
 dest_dir = ''
+
 def main(args):
     """
     initialize parameters and start the scanner
@@ -105,26 +104,26 @@ def parse_file(path):
             f.close()
             print "Wrote combined and minified file to: %s" % (rel_dest + '/' + group_file)
 
-if __name__ == "__main__":
-    """
-    parse arguments and make go
-    """
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        '-s',
-        '--src',
-        help='source folder to watch',
-        default='.',
-        dest='src',
-        metavar='folder'
-    )
-    parser.add_argument(
-        '-d',
-        '--dest',
-        help='source folder to watch',
-        default=None,
-        dest='dest',
-        metavar='folder'
-    )
-    args = parser.parse_args()
-    main(args)
+#if __name__ == "__main__":
+    #"""
+    #parse arguments and make go
+    #"""
+    #parser = argparse.ArgumentParser()
+    #parser.add_argument(
+        #'-s',
+        #'--src',
+        #help='source folder to watch',
+        #default='.',
+        #dest='src',
+        #metavar='folder'
+    #)
+    #parser.add_argument(
+        #'-d',
+        #'--dest',
+        #help='source folder to watch',
+        #default=None,
+        #dest='dest',
+        #metavar='folder'
+    #)
+    #args = parser.parse_args()
+    #main(args)
