@@ -2,18 +2,11 @@ import os
 import time
 import argparse
 import parse
+import config
 from fsevents import Observer, Stream
 
-# what file extensions should we monitor
-source_ext = 'xjs'
-exts = ['js', source_ext]
-groups = []
-source_dir = None
-dest_dir = None
 
 def main():
-    global source_dir
-    global dest_dir
     """
     parse arguments and make go
     """
@@ -39,11 +32,11 @@ def main():
     initialize parameters and start the scanner
     """
     print 'Initializing...'
-    source_dir = os.path.abspath(args.src)
+    config.source_dir = os.path.abspath(args.src)
     if args.dest != None:
-        dest_dir = os.path.abspath(args.dest)
-    init_sources(source_dir)
-    start_scanner(source_dir)
+        config.dest_dir = os.path.abspath(args.dest)
+    init_sources(config.source_dir)
+    start_scanner(config.source_dir)
 
 def dir_list(dir_name):
     outputList = []
@@ -55,26 +48,14 @@ def dir_list(dir_name):
             outputList.append('/'.join([root, f1]))
     return outputList
 
-def init_group(group):
-    global groups
-    group_config = open(group);
-    scripts = []
-    for line in group_config.readlines():
-        segs = line.split()
-        if segs[0] == '@import':
-            scripts.append(os.path.abspath(os.path.dirname(group) + '/' + segs[1]))
-    groups.append((group,scripts))
-
 def init_sources(path):
     """
     initializes array of groups and their associated js files
     """
-    global groups
-    global source_ext
-    for f in dir_list(source_dir):
-        if(os.path.splitext(f)[1][1:] == source_ext):
+    for f in dir_list(path):
+        if(os.path.splitext(f)[1][1:] == config.source_ext):
             print "Source file discovered: %s" % (f)
-            init_group(f)
+            config.sources.append((f, parse.dependencies(f)))
 
 def start_scanner(path):
     """
@@ -96,11 +77,9 @@ def file_modified(event):
     """
     react to file events
     """
-    global groups
-    path, ext = os.path.splitext(event.name)
-    if ext[1:] in exts:
+    if os.path.splitext(event.name)[1][1:] in config.exts:
         print "Change detected to: %s" % (event.name)
-        parse.parse_file(groups,path + ext,dest_dir)
+        parse.parse_file(event.name)
 
 if __name__ == "__main__":
     main()
