@@ -1,3 +1,5 @@
+from script import Script
+import re
 import jsmin
 import os
 import config
@@ -56,15 +58,15 @@ def compile(output, src, dest):
     """
     return
 
-def dependencies(src):
-    scripts = []
-    lines = open(src).readlines()
-    for line in lines:
-        segs = line.split()
-        if len(segs) > 0 and segs[0] in cmds:
-            # determine file path, recurse
-            (source_path,base_file) = os.path.split(src)
-            dep_src = os.path.abspath(source_path + '/' + segs[1])
-            scripts.append(dep_src)
-            scripts.extend(dependencies(dep_src))
-    return scripts
+def parse_dependencies(script,context):
+    lines = open(script.path).read()
+    matches = re.finditer(config.import_regex,lines)
+    for match in matches:
+        # determine file path, recurse
+        src = Script(os.path.abspath(script.dir + '/' + match.group('script')))
+        if (src.path not in config.sources.keys()):
+            src.parents.append(context)
+            config.sources[src.path] = src
+            parse_dependencies(src,context)
+        elif (context not in config.sources[src.path].parents):
+            config.sources[src.path].parents.append(context)

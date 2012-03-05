@@ -1,8 +1,10 @@
+import sys
 import os
 import time
 import argparse
 import parse
 import config
+from script import Script
 from fsevents import Observer, Stream
 
 
@@ -55,7 +57,13 @@ def init_sources(path):
     for f in dir_list(path):
         if(os.path.splitext(f)[1][1:] == config.source_ext):
             print "Source file discovered: %s" % (f)
-            config.sources.append((f, parse.dependencies(f)))
+            script = Script(f)
+            if (script.filename not in config.sources.keys()):
+                config.sources[script.path] = script
+                parse.parse_dependencies(script,script)
+    #for k,v in config.sources.iteritems():
+        #print k, v.parents
+    #sys.exit()
 
 def start_scanner(path):
     """
