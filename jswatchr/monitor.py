@@ -86,7 +86,7 @@ def file_modified(event):
     """
     react to file events
     """
-    if re.match(config.file_regex,event.name):
+    if re.match(config.file_regex,event.name) or (event.name in config.sources.keys()):
         print "Change detected to: %s" % (event.name)
         parse.parse_file(config.sources[event.name])
 
