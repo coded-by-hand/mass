@@ -7,4 +7,5 @@ exts = ['js', source_ext]
 sources = {}
 source_dir = None
 dest_dir = None
-import_regex = '(@import|@require) (?P<script>\S+(.\S+)(?!.min)(.xjs|.js))'
+import_regex = '(?P<command>@import|@require) (?P<script>\S+(.\S+)(?!.min)(.xjs|.js))'
+file_regex = '([a-zA-Z/]*.(?!min)(xjs|js))'

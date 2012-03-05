@@ -11,7 +11,3 @@ class Script:
         self.extension = os.path.splitext(filepath)[1][1:]
         self.basename = os.path.splitext(os.path.split(filepath)[1])[0]
         self.parents = []
-
-    def __str__(self):
-        return self.path
-

@@ -1,3 +1,4 @@
+import re
 import sys
 import os
 import time
@@ -85,9 +86,9 @@ def file_modified(event):
     """
     react to file events
     """
-    if os.path.splitext(event.name)[1][1:] in config.exts:
+    if re.match(config.file_regex,event.name):
         print "Change detected to: %s" % (event.name)
-        parse.parse_file(event.name)
+        parse.parse_file(config.sources[event.name])
 
 if __name__ == "__main__":
     main()
