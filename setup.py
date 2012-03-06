@@ -14,7 +14,7 @@ setup(
     zip_safe = False,
     entry_points = {
         'console_scripts': [
-            "mass = jswatchr.monitor:main"
+            "mass = mass.monitor:main"
         ],
     }
 )
