@@ -44,7 +44,7 @@ def main():
         if c in commands:
             commands[c]() 
 
-def recompile(): 
+def compile(): 
     for key,source in config.sources.iteritems():
         if source.extension == 'xjs':
             parse.parse_file(source)
