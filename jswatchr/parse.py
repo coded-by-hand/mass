@@ -9,6 +9,8 @@ def parse_file(src):
     """
     find file in config and output to dest dir
     """
+    #clear the stack between parses
+    config.stack = []
     for parent in src.parents:
         if config.dest_dir == None:
             dest = parent.dir
@@ -30,9 +32,11 @@ def get_output(src):
     for line in lines:
         m = re.match(config.import_regex,line)
         if m:
-            # TODO: handle user adding a new import line to dependency
-            src_file = config.sources[os.path.abspath(src.dir + '/' + m.group('script'))]
-            output += get_output(src_file)
+            include_file = config.sources[os.path.abspath(src.dir + '/' + m.group('script'))]
+            #require statements dont include if the file has already been included
+            if include_file not in config.stack or m.group('command') == 'import':
+                config.stack.append(include_file)
+                output += get_output(include_file)
         else:
             output += line
     return output
