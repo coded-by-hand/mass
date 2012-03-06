@@ -10,20 +10,11 @@ from fsevents import Observer, Stream
 
 
 def main():
+    cmd = sys.argv
+    cmd.pop(0)
     """
     parse arguments and make go
     """
-    cmd = sys.argv
-    cmd.pop(0)
-    if cmd:
-        c = cmd[0]
-        commands = globals()
-        if c in commands:
-            commands[c]() 
-        else:
-            print 'Invalid command!'
-
-def watch():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '-s',
@@ -42,14 +33,26 @@ def watch():
         metavar='folder'
     )
     args = parser.parse_args()
-    """
-    initialize parameters and start the scanner
-    """
     print 'Initializing...'
     config.source_dir = os.path.abspath(args.src)
     if args.dest != None:
         config.dest_dir = os.path.abspath(args.dest)
     init_sources(config.source_dir)
+    if cmd:
+        c = cmd[0]
+        commands = globals()
+        if c in commands:
+            commands[c]() 
+
+def recompile(): 
+    for key,source in config.sources.iteritems():
+        if source.extension == 'xjs':
+            parse.parse_file(source)
+
+def watch():
+    """
+    initialize parameters and start the scanner
+    """
     start_scanner(config.source_dir)
 
 def dir_list(dir_name):
@@ -99,7 +102,8 @@ def file_modified(event):
     """
     if re.match(config.file_regex,event.name) or (event.name in config.sources.keys()):
         print "Change detected to: %s" % (event.name)
-        parse.parse_file(config.sources[event.name])
+        config.stack = []
+        parse.parse_parents(config.sources[event.name])
 
 if __name__ == "__main__":
     main()

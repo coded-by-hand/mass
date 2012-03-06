@@ -5,23 +5,25 @@ import jsmin
 import os
 import config
 
+def parse_parents(src):
+    for parent in src.parents:
+        parse_file(parent)
+
 def parse_file(src):
     """
     find file in config and output to dest dir
     """
     #clear the stack between parses
-    config.stack = []
-    for parent in src.parents:
-        if config.dest_dir == None:
-            dest = parent.dir
-        else:
-            dest = config.dest_dir
-        output = get_output(parent)
-        output_file = dest + '/' + parent.basename + '.min.js'
-        f = open(output_file,'w')
-        f.write(jsmin.jsmin(output))
-        f.close()
-        print "Wrote combined and minified file to: %s" % (output_file)
+    if config.dest_dir == None:
+        dest = src.dir
+    else:
+        dest = config.dest_dir
+    output = get_output(src)
+    output_file = dest + '/' + src.basename + '.min.js'
+    f = open(output_file,'w')
+    f.write(jsmin.jsmin(output))
+    f.close()
+    print "Wrote combined and minified file to: %s" % (output_file)
 
 def get_output(src):
     """
