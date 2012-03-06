@@ -85,6 +85,17 @@ MASS also supports 'inline' javascript
 
 ## CLI Arguments
 
+###Basic Commands
+
+Mass has two basic CLI commands, `watch` and `compile`.  `watch` begins
+monitoring the specified directory and will compile files as they are edited
+while `compile` will simply minify and combine files located in the specified
+directory.
+
+    mass watch -s path/to/source
+
+    mass compile -s path/to/source
+
 ###Defining Destination Directory
 
 By default, MASS saves the compiled js files in the same directory as the
