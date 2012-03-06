@@ -13,6 +13,17 @@ def main():
     """
     parse arguments and make go
     """
+    cmd = sys.argv
+    cmd.pop(0)
+    if cmd:
+        c = cmd[0]
+        commands = globals()
+        if c in commands:
+            commands[c]() 
+        else:
+            print 'Invalid command!'
+
+def watch():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '-s',
