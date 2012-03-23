@@ -5,8 +5,9 @@ from setuptools import setup
 setup(
     name='mass',
     version='0.1.0',
-    description='Automated tool for authoring, managing, combining and minifying javascript assets for web projects.',
-    author='Jack Boberg Alex Padgett',
+    description='Merge and Simplify Scripts',
+    long_description='automated tool for managing, combining and minifying javascript assets for web projects.',
+    author='jack boberg alex padgett',
     author_email='info@codedbyhand.com',
     url='https://github.com/coded-by-hand/mass',
     license='BSD License',
