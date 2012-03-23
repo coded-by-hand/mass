@@ -1,8 +1,8 @@
 Merge and Simplify Scripts (MASS)
 ===============================
 
-Inspired by SASS, the goal is to build an automated tool system for
-managing javascript files in a project.
+Inspired by SASS, MASS is an automated tool for managing javascript files in a
+web projects.
 
 ### Goals
 
@@ -27,10 +27,10 @@ To install MASS, clone the repo and install using setup.py:
     python setup.py install
 
 MASS comes with the necessary python packages via virutalenv by default.
-Before starting MASS, navigate to the repository and start the virutal
+Before starting MASS, navigate to the repository and start the virtual
 environment.  
 
-If the virtual environment is not started, python packages must be installed to
+If the virtual environment is not started, python packages can be installed to
 the local python environment using pip.
 
     cd path/to/MASS
