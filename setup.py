@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name='mass',
-    version='0.0.1',
+    version='0.1.0',
     description='Automated tool for authoring, managing, combining and minifying javascript assets for web projects.',
     author='Jack Boberg Alex Padgett',
     author_email='info@codedbyhand.com',
