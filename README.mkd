@@ -22,16 +22,18 @@ web projects.
 
 ##Installation
 
-To install MASS, clone the repo and install using setup.py:
+MASS can be installed via pip:
+
+    pip install mass
+
+To install MASS manually, clone the repo and install using setup.py:
 
     python setup.py install
 
 MASS comes with the necessary python packages via virutalenv by default.
-Before starting MASS, navigate to the repository and start the virtual
-environment.  
 
-If the virtual environment is not started, python packages can be installed to
-the local python environment using pip.
+Before installing MASS, users can enable virtualenv by navigating to the
+repository and sourcing the virtual environment.  
 
     cd path/to/MASS
     source env/bin/activate
