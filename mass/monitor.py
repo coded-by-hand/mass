@@ -6,7 +6,11 @@ import argparse
 import parse
 import config
 from script import Script
-from fsevents import Observer, Stream
+
+try:
+    from fsevents import Observer, Stream
+except ImportError:
+    from pyinotify import *
 
 
 def main():
