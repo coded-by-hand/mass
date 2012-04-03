@@ -50,7 +50,7 @@ def main():
 
 def compile(): 
     for key,source in config.sources.iteritems():
-        if source.extension == 'xjs':
+        if source.extension == config.source_ext:
             parse.parse_file(source)
 
 def watch():
@@ -80,9 +80,6 @@ def init_sources(path):
             if (script.filename not in config.sources.keys()):
                 config.sources[script.path] = script
                 parse.parse_dependencies(script,script)
-    #for k,v in config.sources.iteritems():
-        #print k, v.parents
-    #sys.exit()
 
 def start_scanner(path):
     """
@@ -107,7 +104,11 @@ def file_modified(event):
     if re.match(config.file_regex,event.name) or (event.name in config.sources.keys()):
         print "Change detected to: %s" % (event.name)
         config.stack = []
-        parse.parse_parents(config.sources[event.name])
+        script = config.sources[event.name]
+        if script.extension == config.source_ext:
+            parse.parse_file(script)
+        else:
+            parse.parse_parents(script)
 
 if __name__ == "__main__":
     main()
