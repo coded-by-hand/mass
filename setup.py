@@ -1,12 +1,18 @@
 #!/usr/bin/env python
 
+#pandoc -f rst -t markdown README.mkd -o README
+
+import os
 from setuptools import setup
+
+def read(fname):
+    return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(
     name='mass',
-    version='0.1.0',
-    description='Merge and Simplify Scripts',
-    long_description='automated tool for managing, combining and minifying javascript assets for web projects.',
+    version='0.1.1',
+    description='Merge and Simplify Scripts: an automated tool for managing, combining and minifying javascript assets for web projects.',
+    long_description=read('README'),
     author='jack boberg alex padgett',
     author_email='info@codedbyhand.com',
     url='https://github.com/coded-by-hand/mass',
