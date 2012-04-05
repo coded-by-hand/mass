@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+#pandoc -f rst -t markdown README.mkd -o README
+
 import os
 from setuptools import setup
 
