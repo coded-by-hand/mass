@@ -1,0 +1,145 @@
+Merge and Simplify Scripts (MASS)
+=================================
+
+Inspired by SASS, MASS is an automated tool for managing javascript
+files in a web projects.
+
+Goals
+~~~~~
+
+-  easy method to combine multiple files into single asset request
+-  automated minification/optimization
+-  extending javascript to allow import other scripts
+
+Requirements
+------------
+
+-  Mac OS X (currently using fsevents to track file changes. will later
+   add support for Linux and Windows)
+
+Python Packages Used
+~~~~~~~~~~~~~~~~~~~~
+
+-  jsmin (http://pypi.python.org/pypi/jsmin)
+-  macfsevents (http://pypi.python.org/pypi/MacFSEvents/0.2.1)
+-  virtualenv (http://pypi.python.org/pypi/virtualenv)
+-  argparse (http://pypi.python.org/pypi/argparse)
+
+Installation
+------------
+
+MASS can be installed via pip:
+
+::
+
+    pip install mass
+
+To install MASS manually, clone the repo and install using setup.py:
+
+::
+
+    python setup.py install
+
+MASS comes with the necessary python packages via virutalenv by default.
+
+Before installing MASS, users can enable virtualenv by navigating to the
+repository and sourcing the virtual environment.
+
+::
+
+    cd path/to/MASS
+    source env/bin/activate
+
+Source Files
+------------
+
+Source files use the extension ’.xjs’, which tentatively signifies
+extended javascript. These files are used to define javascript files
+which will be included in a “compiled” version that is output by MASS.
+
+Including Files
+~~~~~~~~~~~~~~~
+
+Inside ‘extended’ javascript files, you can import other scripts. All
+javascript files listed in the source file will be combined, minified
+and output to a javascript file with the same name as the original xjs
+file. Paths to imported javascript files should be relative to the
+directory of the xjs file they are imported into.
+
+The example below specifies two javascript files and will be output to
+the file foo.min.js:
+
+::
+
+    # foo.xjs
+    #!import foo.js
+    #!import plugins/jquery.jnotify.js
+
+Require commands can be used to ensure that a file has been already been
+imported, and will import the script if they have not.
+
+::
+
+    # foo.xjs
+    #!import foo.js
+    #!import bar.js
+
+    # foo.js
+    #!require bar.js 
+
+In the above example, bar.js will not be re-imported since foo.xjs has
+already imported it.
+
+MASS also supports ‘inline’ javascript
+
+::
+
+    # bar.js
+    #!import foo.js
+
+    # now some javascript 
+    $(document).ready(function(){
+        // jquery is ready
+    });
+
+    # another import!
+    #!import plugins/jquery.jnotify.js
+
+CLI Arguments
+-------------
+
+Basic Commands
+~~~~~~~~~~~~~~
+
+Mass has two basic CLI commands, ``watch`` and ``compile``. ``watch``
+begins monitoring the specified directory and will compile files as they
+are edited while ``compile`` will simply minify and combine files
+located in the specified directory.
+
+::
+
+    mass watch -s path/to/source
+
+    mass compile -s path/to/source
+
+Defining Destination Directory
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+By default, MASS saves the compiled js files in the same directory as
+the source files. The -d argument can be used to specify a different
+output directory.
+
+::
+
+    mass watch -d path/to/output
+
+Defining Source Directory
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If a source directory is not specified, MASS uses the current directory
+by default. The -s argument can be used to specify the directory for
+MASS to discover files.
+
+::
+
+    mass watch -s path/to/source -d path/to/output
