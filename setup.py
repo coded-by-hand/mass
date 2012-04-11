@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-#pandoc -f rst -t markdown README.mkd -o README
+#pandoc -t rst -f markdown README.mkd -o README
 
 import os
 from setuptools import setup
@@ -10,7 +10,7 @@ def read(fname):
 
 setup(
     name='mass',
-    version='0.1.2',
+    version='0.1.3',
     description='Merge and Simplify Scripts: an automated tool for managing, combining and minifying javascript assets for web projects.',
     long_description=read('README'),
     author='jack boberg alex padgett',
