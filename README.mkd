@@ -55,35 +55,35 @@ file they are imported into.
 The example below specifies two javascript files and will be output to the file
 foo.min.js:
 
-    # foo.xjs
-    #!import foo.js
-    #!import plugins/jquery.jnotify.js
+    // foo.xjs
+    // import "foo.js"
+    // import "plugins/jquery.jnotify.js"
 
 Require commands can be used to ensure that a file has been already been
 imported, and will import the script if they have not.  
 
-    # foo.xjs
-    #!import foo.js
-    #!import bar.js
+    // foo.xjs
+    // import "foo.js"
+    // import "bar.js"
 
-    # foo.js
-    #!require bar.js 
+    // foo.js
+    // require "bar.js" 
 
 In the above example, bar.js will not be re-imported since foo.xjs has already
 imported it.
 
 MASS also supports 'inline' javascript
 
-    # bar.js
-    #!import foo.js
+    // bar.js
+    // import "foo.js"
 
-    # now some javascript 
+    // now some javascript 
     $(document).ready(function(){
         // jquery is ready
     });
 
-    # another import!
-    #!import plugins/jquery.jnotify.js
+    // another import!
+    // import "plugins/jquery.jnotify.js"
 
 ## CLI Arguments
 

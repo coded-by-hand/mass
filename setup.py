@@ -10,7 +10,7 @@ def read(fname):
 
 setup(
     name='mass',
-    version='0.1.3',
+    version='0.1.4',
     description='Merge and Simplify Scripts: an automated tool for managing, combining and minifying javascript assets for web projects.',
     long_description=read('README'),
     author='jack boberg alex padgett',
